@@ -1,0 +1,71 @@
+### Maven ###
+target/
+!.mvn/wrapper/maven-wrapper.jar
+.mvn/timing.properties
+**/dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/wrapper/maven-wrapper.properties
+
+### Gradle ###
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### STS / IntelliJ / Eclipse ###
+.springBeans
+.sts4-cache
+.classpath
+.project
+.settings/
+bin/
+tmp/
+*.iml
+*.ipr
+*.iws
+.idea/
+out/
+
+### Logs ###
+*.log
+*.log.*
+logs/
+debug/
+error/
+
+### OS ###
+.DS_Store
+Thumbs.db
+
+### Test reports ###
+/test-output/
+/surefire-reports/
+/failsafe-reports/
+/jacoco.exec
+/jacoco-report/
+
+### Coverage ###
+/coverage/
+/*.lcov
+*.hprof
+
+### Others ###
+*.swp
+*.swo
+*.bak
+*.tmp
+hs_err_pid*
+replay_pid*
+
+### Spring Boot specific ###
+/.env
+/.env.*
+/*.db
+/*.sqlite
+*.h2.db
+*.mv.db
+
+### Docker ###
+/.dockerignore
+docker-compose.override.yml
