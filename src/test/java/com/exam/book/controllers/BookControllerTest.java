@@ -159,10 +159,10 @@ public class BookControllerTest {
     void testCreateBookInternalServerError() throws Exception {
 
         BookRequest request = new BookRequest();
-        request.setBookName("");
-        request.setIsbn("");
-        request.setAuthor("");
-        request.setBookStatus(null);
+        request.setBookName("11");
+        request.setIsbn("11");
+        request.setAuthor("11");
+        request.setBookStatus(BookStatus.Pending.toString());
         BookResponse response = new BookResponse();
         response.setBookId(1);
         response.setBookName("test");
@@ -207,9 +207,9 @@ public class BookControllerTest {
     void testUpdateBookBadRequest() throws Exception {
 
         BookRequest request = new BookRequest();
-        request.setBookName("test");
-        request.setIsbn("1234");
-        request.setAuthor("test");
+        request.setBookName("");
+        request.setIsbn("");
+        request.setAuthor("");
         request.setBookStatus(BookStatus.Pending.toString());
         BookResponse response = new BookResponse();
         response.setBookId(1);

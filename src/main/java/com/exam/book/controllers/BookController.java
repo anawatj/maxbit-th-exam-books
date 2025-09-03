@@ -3,6 +3,7 @@ package com.exam.book.controllers;
 import com.exam.book.dto.request.BookRequest;
 import com.exam.book.exceptions.NotFoundException;
 import com.exam.book.services.BookService;
+import jakarta.validation.Valid;
 import jakarta.validation.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -41,29 +42,21 @@ public class BookController {
         }
     }
     @PostMapping
-    public ResponseEntity<?> createBook(@RequestBody BookRequest bookRequest){
+    public ResponseEntity<?> createBook(@Valid @RequestBody BookRequest bookRequest){
         try{
             return ResponseEntity.status(HttpStatus.CREATED).body(bookService.createBook(bookRequest));
         }catch (Exception e){
-            if(e instanceof ValidationException){
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-            }else{
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-            }
-
         }
     }
     @PutMapping(value = "/{bookId}")
-    public ResponseEntity<?> updateBook(@RequestBody BookRequest bookRequest,@PathVariable Integer bookId){
+    public ResponseEntity<?> updateBook(@Valid @RequestBody BookRequest bookRequest,@PathVariable Integer bookId){
         try{
             return ResponseEntity.ok(bookService.updateBook(bookRequest,bookId));
         }catch(Exception e){
             if(e instanceof NotFoundException){
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-            }else if(e instanceof  ValidationException){
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-            }
-            else{
+            } else{
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
             }
         }
