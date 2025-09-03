@@ -146,7 +146,7 @@ public class BookControllerTest {
         response.setAuthor("test");
         response.setBookStatus(BookStatus.Pending);
 
-        Mockito.when(bookService.createBook(request)).thenThrow(new ValidationException(""));
+        //Mockito.when(bookService.createBook(request)).thenThrow(new ValidationException(""));
 
         mockMvc.perform(post("/books")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -218,7 +218,7 @@ public class BookControllerTest {
         response.setAuthor("test");
         response.setBookStatus(BookStatus.Pending);
 
-        Mockito.when(bookService.updateBook(request,1)).thenThrow(new ValidationException(""));
+        //Mockito.when(bookService.updateBook(request,1)).thenThrow(new ValidationException(""));
 
         mockMvc.perform(put("/books/{id}",1)
                         .contentType(MediaType.APPLICATION_JSON)
