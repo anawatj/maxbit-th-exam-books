@@ -37,8 +37,8 @@ public class LoanEntity extends BaseEntity{
     @ManyToMany(fetch = FetchType.LAZY,cascade =CascadeType.ALL)
     @JoinTable(
             name = TableName.TB_LOAN_DETAIL,
-            joinColumns = @JoinColumn(name = ColumnName.LOAN_ID),
-            inverseJoinColumns = @JoinColumn(name = ColumnName.BOOK_ID))
+            joinColumns = @JoinColumn(name = ColumnName.LOAN_ID,referencedColumnName = ColumnName.LOAN_ID),
+            inverseJoinColumns = @JoinColumn(name = ColumnName.BOOK_ID,referencedColumnName = ColumnName.BOOK_ID))
     private List<BookEntity> books;
 
 }

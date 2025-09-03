@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class LoanService {
@@ -71,7 +72,7 @@ public class LoanService {
             });
         }
         final LoanEntity savedLoan = loanRepository.save(loanEntity);
-        return mapper.toResponse(savedLoan);
+        return getLoanResponse(savedLoan);
     }
     @Transactional(rollbackFor = Exception.class)
     public DeleteResponse deleteLoan(Integer loanId) throws Exception{
@@ -103,7 +104,7 @@ public class LoanService {
                 }
             }
             return optBookEntity.get();
-        }).toList());
+        }).collect(Collectors.toList()));
         loanEntity.setUpdatedBy(StaticVariable.UPDATED_BY);
         loanEntity.setUpdatedDate(LocalDateTime.now());
         return loanEntity;
@@ -112,7 +113,14 @@ public class LoanService {
     private LoanEntity getCreateLoanEntity(LoanRequest loanRequest) throws NotFoundException {
         LoanEntity loanEntity = mapper.toEntity(loanRequest);
         MemberEntity memberEntity = memberRepository.findById(loanRequest.getMemberId()).orElseThrow(()->new NotFoundException(Message.MEMBER_NOT_FOUND));
-        loanEntity.setBooks(loanRequest.getBooks().stream().map(mapper::toBookEntity).toList());
+        loanEntity.setBooks(loanRequest.getBooks().stream().map(bookRequest->{
+            try {
+                BookEntity bookEntity = bookRepository.findById(bookRequest.getBookId()).orElseThrow(()->new NotFoundException(Message.BOOK_NOT_FOUND));
+                return bookEntity;
+            } catch (NotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        }).collect(Collectors.toList()));
         loanEntity.setMember(memberEntity);
         loanEntity.setCreatedBy(StaticVariable.CREATED_BY);
         loanEntity.setCreatedDate(LocalDateTime.now());

@@ -181,7 +181,7 @@ public class LoanServiceTest {
         mockResponse.setBooks(mockBookResponses);
 
         Mockito.when(loanMapper.toEntity(request)).thenReturn(mockItem);
-        Mockito.when(loanMapper.toBookEntity(mockBookRequest)).thenReturn(book);
+        Mockito.when(bookRepository.findById(1)).thenReturn(Optional.of(book));
         Mockito.when(memberRepository.findById(1)).thenReturn(Optional.of(mockMember));
         Mockito.when(loanRepository.save(mockItem)).thenReturn(mockItem);
         Mockito.when(loanMapper.toResponse(mockItem)).thenReturn(mockResponse);
@@ -238,7 +238,7 @@ public class LoanServiceTest {
         mockResponse.setBooks(mockBookResponses);
 
         Mockito.when(loanMapper.toEntity(request)).thenReturn(mockItem);
-        Mockito.when(loanMapper.toBookEntity(mockBookRequest)).thenReturn(book);
+        Mockito.when(bookRepository.findById(1)).thenReturn(Optional.of(book));
         Mockito.when(memberRepository.findById(1)).thenReturn(Optional.of(mockMember));
         Mockito.when(loanRepository.save(mockItem)).thenReturn(mockItem);
         Mockito.when(loanMapper.toResponse(mockItem)).thenReturn(mockResponse);
@@ -248,6 +248,58 @@ public class LoanServiceTest {
         LoanResponse response = loanService.createLoan(request);
 
         Assertions.assertEquals(1, response.getLoanId());
+
+    }
+
+    @Test
+    void testCreateLoanWithBookNotFound() throws Exception {
+        LoanRequest request = new LoanRequest();
+        request.setMemberId(1);
+        request.setLoanDate(LocalDate.now());
+        request.setLoanStatus(LoanStatus.Loan.toString());
+        request.setReturnDate(LocalDate.now());
+        List<LoanBookRequest> mockBookRequests = new ArrayList<>();
+        LoanBookRequest mockBookRequest = new LoanBookRequest();
+        mockBookRequest.setBookId(1);
+        mockBookRequests.add(mockBookRequest);
+        request.setBooks(mockBookRequests);
+
+        LoanEntity mockItem = new LoanEntity();
+        mockItem.setLoanId(1);
+        MemberEntity mockMember = new MemberEntity();
+        mockMember.setMemberId(request.getMemberId());
+        mockItem.setMember(mockMember);
+        mockItem.setLoanDate(request.getLoanDate());
+        mockItem.setReturnDate(request.getReturnDate());
+        mockItem.setLoanStatus(LoanStatus.Loan);
+        mockItem.setCreatedBy(StaticVariable.CREATED_BY);
+        mockItem.setCreatedDate(LocalDateTime.now());
+        mockItem.setUpdatedBy(mockItem.getCreatedBy());
+        mockItem.setUpdatedDate(mockItem.getCreatedDate());
+        List<BookEntity> books = new ArrayList<>();
+        BookEntity book = new BookEntity();
+        book.setBookId(1);
+        books.add(book);
+        mockItem.setBooks(books);
+
+        LoanResponse mockResponse = new LoanResponse();
+        mockResponse.setLoanId(mockItem.getLoanId());
+        mockResponse.setMemberId(mockItem.getMember().getMemberId());
+        mockResponse.setLoanDate(mockItem.getLoanDate());
+        mockResponse.setLoanStatus(mockItem.getLoanStatus());
+        mockResponse.setReturnDate(mockItem.getReturnDate());
+        List<LoanBookResponse> mockBookResponses = new ArrayList<>();
+        LoanBookResponse mockBookResponse = new LoanBookResponse();
+        mockBookResponse.setBookId(book.getBookId());
+        mockBookResponses.add(mockBookResponse);
+        mockResponse.setBooks(mockBookResponses);
+
+        Mockito.when(loanMapper.toEntity(request)).thenReturn(mockItem);
+        Mockito.when(bookRepository.findById(1)).thenReturn(Optional.empty());
+        Mockito.when(memberRepository.findById(1)).thenReturn(Optional.of(mockMember));
+
+
+        Assertions.assertThrows(RuntimeException.class,()->loanService.createLoan(request));
 
     }
 
