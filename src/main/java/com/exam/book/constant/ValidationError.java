@@ -15,4 +15,10 @@ public class ValidationError {
 
     public final static String BOOK_ID_IS_POSITIVE="book id is positive";
 
+    public final static String MEMBER_NAME_IS_NOT_EMPTY="member name is not empty";
+    public final static String MEMBER_LASTNAME_IS_NOT_EMPTY="member last name is not empty";
+    public final static String EMAIL_IS_INVALID="email is invalid";
+    public final static String PASSWORD_IS_NOT_EMPTY="password is not empty";
+    public final static String ROLE_IS_NOT_EMPTY="role is not empty";
+
 }

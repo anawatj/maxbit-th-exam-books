@@ -6,10 +6,10 @@ import jakarta.validation.Payload;
 import java.lang.annotation.*;
 
 @Documented
-@Constraint(validatedBy = LoanStatusValidator.class)
+@Constraint(validatedBy = RoleValidator.class)
 @Target({ ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER })
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ValidLoanStatus {
+public @interface ValidRole {
     String message() default "must be any of enum {enumClass}";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};

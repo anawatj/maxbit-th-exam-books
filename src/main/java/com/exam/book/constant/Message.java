@@ -8,4 +8,5 @@ public class Message {
     public final static String DELETE_LOAN_SUCCESS="delete loan success";
 
     public final static String MEMBER_NOT_FOUND="member not found";
+    public final static String MEMBER_IS_EXISTS ="member is exists";
 }

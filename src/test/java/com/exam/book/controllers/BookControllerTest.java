@@ -228,6 +228,24 @@ public class BookControllerTest {
     }
 
     @Test
+    void testUpdateBookNotFound() throws Exception {
+
+        BookRequest request = new BookRequest();
+        request.setBookName("test");
+        request.setIsbn("1234");
+        request.setAuthor("test");
+        request.setBookStatus(BookStatus.Pending.toString());
+
+        Mockito.when(bookService.updateBook(request,1)).thenThrow(new NotFoundException(""));
+
+        mockMvc.perform(put("/books/{id}",1)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isNotFound());
+
+    }
+
+    @Test
     void testUpdateBookInternalServerError() throws Exception {
 
         BookRequest request = new BookRequest();

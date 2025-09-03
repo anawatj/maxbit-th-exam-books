@@ -15,6 +15,9 @@ public class ColumnName {
     public final static String MEMBER_ID="member_id";
     public final static String MEMBER_NAME="member_name";
     public final static String MEMBER_LASTNAME="member_lastname";
+    public final static String EMAIL="email";
+    public final static String PASSWORD="password";
+    public final static String ROLE="role";
 
     public final static String LOAN_ID="loan_id";
     public final static String LOAN_MEMBER="loan_member";
