@@ -9,4 +9,7 @@ public class Message {
 
     public final static String MEMBER_NOT_FOUND="member not found";
     public final static String MEMBER_IS_EXISTS ="member is exists";
+
+
+    public  final static String BOOK_IS_LOANED="book is loaned";
 }

@@ -10,6 +10,7 @@ import com.exam.book.entities.LoanEntity;
 import com.exam.book.entities.MemberEntity;
 import com.exam.book.enums.BookStatus;
 import com.exam.book.enums.LoanStatus;
+import com.exam.book.exceptions.BadRequestException;
 import com.exam.book.exceptions.NotFoundException;
 import com.exam.book.mappers.LoanMapper;
 import com.exam.book.repositories.BookRepository;
@@ -53,7 +54,16 @@ public class LoanService {
         LoanEntity loanEntity =  getCreateLoanEntity(loanRequest);
         if(loanEntity.getLoanStatus()==LoanStatus.Loan){
             loanEntity.getBooks().forEach(bookEntity -> {
-                bookEntity.setBookStatus(BookStatus.Loan);
+                if(bookEntity.getBookStatus()==BookStatus.Pending){
+                    bookEntity.setBookStatus(BookStatus.Loan);
+                }else{
+                    try {
+                        throw new BadRequestException(Message.BOOK_IS_LOANED);
+                    } catch (BadRequestException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+
             });
         }
         final LoanEntity savedLoan= loanRepository.save(loanEntity);
@@ -68,7 +78,16 @@ public class LoanService {
             });
         }else if(loanEntity.getLoanStatus()==LoanStatus.Loan){
             loanEntity.getBooks().forEach(bookEntity -> {
-                bookEntity.setBookStatus(BookStatus.Loan);
+                if(bookEntity.getBookStatus()==BookStatus.Pending){
+                    bookEntity.setBookStatus(BookStatus.Loan);
+                }else{
+                    try {
+                        throw new BadRequestException(Message.BOOK_IS_LOANED);
+                    } catch (BadRequestException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+
             });
         }
         final LoanEntity savedLoan = loanRepository.save(loanEntity);
