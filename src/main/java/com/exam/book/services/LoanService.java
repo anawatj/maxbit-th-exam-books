@@ -104,6 +104,7 @@ public class LoanService {
             bookEntity.setBookStatus(BookStatus.Pending);
         });
         bookRepository.saveAll(loanEntity.getBooks());
+        loanEntity.getBooks().clear();
         loanRepository.delete(loanEntity);
         DeleteResponse response = new DeleteResponse();
         response.setMessage(Message.DELETE_LOAN_SUCCESS);
