@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -52,43 +53,46 @@ public class LoanService {
     @Transactional(rollbackFor = Exception.class)
     public LoanResponse createLoan(LoanRequest loanRequest) throws Exception{
         LoanEntity loanEntity =  getCreateLoanEntity(loanRequest);
+        List<String> bookErrors = new ArrayList<>();
         if(loanEntity.getLoanStatus()==LoanStatus.Loan){
             loanEntity.getBooks().forEach(bookEntity -> {
                 if(bookEntity.getBookStatus()==BookStatus.Pending){
                     bookEntity.setBookStatus(BookStatus.Loan);
                 }else{
-                    try {
-                        throw new BadRequestException(Message.BOOK_IS_LOANED);
-                    } catch (BadRequestException e) {
-                        throw new RuntimeException(e);
-                    }
+                    bookErrors.add(Integer.toString(bookEntity.getBookId())+" "+Message.BOOK_IS_LOANED);
                 }
 
             });
+            if(!bookErrors.isEmpty()){
+                throw new BadRequestException(String.join("\\n",bookErrors));
+            }
         }
+
         final LoanEntity savedLoan= loanRepository.save(loanEntity);
         return getLoanResponse(savedLoan);
     }
     @Transactional(rollbackFor = Exception.class)
     public LoanResponse updateLoan(LoanRequest request,Integer loanId) throws Exception{
         LoanEntity loanEntity =  getUpdateLoanEntity(request, loanId);
+        List<String> bookErrors = new ArrayList<>();
         if(loanEntity.getLoanStatus()==LoanStatus.Return){
             loanEntity.getBooks().forEach(bookEntity -> {
                 bookEntity.setBookStatus(BookStatus.Pending);
             });
         }else if(loanEntity.getLoanStatus()==LoanStatus.Loan){
+
             loanEntity.getBooks().forEach(bookEntity -> {
                 if(bookEntity.getBookStatus()==BookStatus.Pending){
                     bookEntity.setBookStatus(BookStatus.Loan);
                 }else{
-                    try {
-                        throw new BadRequestException(Message.BOOK_IS_LOANED);
-                    } catch (BadRequestException e) {
-                        throw new RuntimeException(e);
-                    }
+                    bookErrors.add(Integer.toString(bookEntity.getBookId())+" "+Message.BOOK_IS_LOANED);
                 }
 
             });
+            if(!bookErrors.isEmpty()){
+                throw new BadRequestException(String.join("\\n",bookErrors));
+            }
+
         }
         final LoanEntity savedLoan = loanRepository.save(loanEntity);
         return getLoanResponse(savedLoan);

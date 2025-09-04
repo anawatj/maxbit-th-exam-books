@@ -12,6 +12,7 @@ import com.exam.book.entities.LoanEntity;
 import com.exam.book.entities.MemberEntity;
 import com.exam.book.enums.BookStatus;
 import com.exam.book.enums.LoanStatus;
+import com.exam.book.exceptions.BadRequestException;
 import com.exam.book.exceptions.NotFoundException;
 import com.exam.book.mappers.LoanMapper;
 import com.exam.book.repositories.BookRepository;
@@ -299,12 +300,9 @@ public class LoanServiceTest {
         Mockito.when(loanMapper.toEntity(request)).thenReturn(mockItem);
         Mockito.when(bookRepository.findById(1)).thenReturn(Optional.of(book));
         Mockito.when(memberRepository.findById(1)).thenReturn(Optional.of(mockMember));
-        //Mockito.when(loanRepository.save(mockItem)).thenReturn(mockItem);
-        //Mockito.when(loanMapper.toResponse(mockItem)).thenReturn(mockResponse);
-        //Mockito.when(loanMapper.toBookResponse(book)).thenReturn(mockBookResponse);
 
 
-       Assertions.assertThrows(RuntimeException.class,()->loanService.createLoan(request));
+       Assertions.assertThrows(BadRequestException.class,()->loanService.createLoan(request));
 
     }
 
@@ -518,11 +516,10 @@ public class LoanServiceTest {
         Mockito.when(bookRepository.findById(1)).thenReturn(Optional.of(book));
         Mockito.when(loanRepository.findById(1)).thenReturn(Optional.of(mockItem));
         Mockito.when(memberRepository.findById(1)).thenReturn(Optional.of(mockMember));
-        //Mockito.when(loanRepository.save(mockItem)).thenReturn(mockItem);
-       // Mockito.when(loanMapper.toResponse(mockItem)).thenReturn(mockResponse);
 
 
-        Assertions.assertThrows(RuntimeException.class,()->loanService.updateLoan(request,1));
+
+        Assertions.assertThrows(BadRequestException.class,()->loanService.updateLoan(request,1));
 
     }
 

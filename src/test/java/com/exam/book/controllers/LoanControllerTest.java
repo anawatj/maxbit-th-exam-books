@@ -7,6 +7,7 @@ import com.exam.book.dto.response.DeleteResponse;
 import com.exam.book.dto.response.LoanBookResponse;
 import com.exam.book.dto.response.LoanResponse;
 import com.exam.book.enums.LoanStatus;
+import com.exam.book.exceptions.BadRequestException;
 import com.exam.book.exceptions.NotFoundException;
 import com.exam.book.services.LoanService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -149,6 +150,38 @@ public class LoanControllerTest {
     void testCreateLoanBadRequest() throws  Exception{
         LoanRequest request =new LoanRequest();
         request.setMemberId(1);
+        request.setLoanDate(LocalDate.now());
+        request.setReturnDate(LocalDate.now());
+        request.setLoanStatus(LoanStatus.Loan.toString());
+        List<LoanBookRequest> bookRequests = new ArrayList<>();
+        LoanBookRequest bookRequest  =new LoanBookRequest();
+        bookRequest.setBookId(1);
+        bookRequests.add(bookRequest);
+        request.setBooks(bookRequests);
+        LoanResponse response = new LoanResponse();
+        response.setLoanId(1);
+        response.setLoanDate(LocalDate.now());
+        response.setReturnDate(LocalDate.now());
+        response.setMemberId(1);
+        response.setLoanStatus(LoanStatus.Loan);
+        List<LoanBookResponse> bookResponses = new ArrayList<>();
+        LoanBookResponse bookResponse = new LoanBookResponse();
+        bookResponse.setBookId(1);
+        bookResponses.add(bookResponse);
+        response.setBooks(bookResponses);
+
+        Mockito.when(loanService.createLoan(request)).thenThrow(BadRequestException.class);
+
+        mockMvc.perform(post("/loans")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void testCreateLoanInvalidInput() throws  Exception{
+        LoanRequest request =new LoanRequest();
+        request.setMemberId(1);
         request.setLoanDate(null);
         request.setReturnDate(null);
         request.setLoanStatus(null);
@@ -177,6 +210,29 @@ public class LoanControllerTest {
 
 
         Mockito.when(loanService.createLoan(request)).thenThrow(new NotFoundException(Message.LOAN_NOT_FOUND));
+
+        mockMvc.perform(post("/loans")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isNotFound());
+    }
+
+
+    @Test
+    void testCreateLoanBookError() throws  Exception {
+        LoanRequest request = new LoanRequest();
+        request.setMemberId(1);
+        request.setLoanDate(LocalDate.now());
+        request.setReturnDate(LocalDate.now());
+        request.setLoanStatus(LoanStatus.Loan.toString());
+        List<LoanBookRequest> bookRequests = new ArrayList<>();
+        LoanBookRequest bookRequest = new LoanBookRequest();
+        bookRequest.setBookId(1);
+        bookRequests.add(bookRequest);
+        request.setBooks(bookRequests);
+
+
+        Mockito.when(loanService.createLoan(request)).thenThrow(new RuntimeException(Message.LOAN_NOT_FOUND));
 
         mockMvc.perform(post("/loans")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -242,6 +298,38 @@ public class LoanControllerTest {
     void testUpdateLoanBadRequest() throws  Exception{
         LoanRequest request =new LoanRequest();
         request.setMemberId(1);
+        request.setLoanDate(LocalDate.now());
+        request.setReturnDate(LocalDate.now());
+        request.setLoanStatus(LoanStatus.Loan.toString());
+        List<LoanBookRequest> bookRequests = new ArrayList<>();
+        LoanBookRequest bookRequest  =new LoanBookRequest();
+        bookRequest.setBookId(1);
+        bookRequests.add(bookRequest);
+        request.setBooks(bookRequests);
+        LoanResponse response = new LoanResponse();
+        response.setLoanId(1);
+        response.setLoanDate(LocalDate.now());
+        response.setReturnDate(LocalDate.now());
+        response.setMemberId(1);
+        response.setLoanStatus(LoanStatus.Loan);
+        List<LoanBookResponse> bookResponses = new ArrayList<>();
+        LoanBookResponse bookResponse = new LoanBookResponse();
+        bookResponse.setBookId(1);
+        bookResponses.add(bookResponse);
+        response.setBooks(bookResponses);
+
+        Mockito.when(loanService.updateLoan(request,1)).thenThrow(BadRequestException.class);
+
+        mockMvc.perform(put("/loans/{id}",1)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void testUpdateLoanInvalidInput() throws  Exception{
+        LoanRequest request =new LoanRequest();
+        request.setMemberId(1);
         request.setLoanDate(null);
         request.setReturnDate(null);
         request.setLoanStatus(null);
@@ -271,6 +359,30 @@ public class LoanControllerTest {
 
 
         Mockito.when(loanService.updateLoan(request,1)).thenThrow(new NotFoundException(Message.LOAN_NOT_FOUND));
+
+        mockMvc.perform(put("/loans/{id}",1)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isNotFound());
+    }
+
+
+    @Test
+    void testUpdateLoanNotFoundBook() throws  Exception{
+        LoanRequest request =new LoanRequest();
+        request.setMemberId(1);
+        request.setLoanDate(LocalDate.now());
+        request.setReturnDate(LocalDate.now());
+        request.setLoanStatus(LoanStatus.Loan.toString());
+        List<LoanBookRequest> bookRequests = new ArrayList<>();
+        LoanBookRequest bookRequest  =new LoanBookRequest();
+        bookRequest.setBookId(1);
+        bookRequests.add(bookRequest);
+        request.setBooks(bookRequests);
+
+
+
+        Mockito.when(loanService.updateLoan(request,1)).thenThrow(new RuntimeException(Message.LOAN_NOT_FOUND));
 
         mockMvc.perform(put("/loans/{id}",1)
                         .contentType(MediaType.APPLICATION_JSON)

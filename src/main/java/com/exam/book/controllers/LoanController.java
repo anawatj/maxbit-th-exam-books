@@ -1,6 +1,7 @@
 package com.exam.book.controllers;
 
 import com.exam.book.dto.request.LoanRequest;
+import com.exam.book.exceptions.BadRequestException;
 import com.exam.book.exceptions.NotFoundException;
 import com.exam.book.services.LoanService;
 import jakarta.validation.Valid;
@@ -47,7 +48,12 @@ public class LoanController {
         }catch (Exception e){
             if(e instanceof NotFoundException){
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-            } else{
+            } else if(e instanceof  BadRequestException){
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            } else if(e instanceof  RuntimeException){
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+            }
+            else{
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
             }
         }
@@ -59,7 +65,11 @@ public class LoanController {
         }catch (Exception e){
             if(e instanceof NotFoundException){
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-            } else{
+            }else if(e instanceof BadRequestException){
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            } else if (e instanceof RuntimeException) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+            } else {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
             }
         }
